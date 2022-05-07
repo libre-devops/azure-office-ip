@@ -116,7 +116,7 @@ stages:
                 # Remotely fetch pipeline template, in this case, I am using one in my development repo.
                 - template: /.azurepipelines/.templates/.python/generic-function-app-package-and-deploy.yml@azdo-azure-function-package-and-deploy-pipeline-template
                   parameters:
-                    CODE_PATH: "$(Build.SourcesDirectory)/azure-office-ip/og-code"
+                    CODE_PATH: "$(Build.SourcesDirectory)/azure-office-ip/src"
                     CODE_ARCH: "x64"
                     CODE_VERSION: "3.9"
                     AZDO_SERVICE_CONNECTION_NAME: "svp-ldo-euw-dev-mgt-01"
