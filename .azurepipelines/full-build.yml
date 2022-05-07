@@ -97,6 +97,7 @@ stages:
               timeoutInMinutes: 4320 # job times out in 3 days
               steps:
                 - task: ManualValidation@0
+                  displayName: "Waiting for Approval"
                   timeoutInMinutes: 1440 # task times out in 1 day
                   inputs:
                     notifyUsers: |
@@ -110,6 +111,7 @@ stages:
               displayName: "Code Build and Deploy"
               steps:
                 - checkout: self
+                - checkout: azure-naming-convention
 
                 # Remotely fetch pipeline template, in this case, I am using one in my development repo.
                 - template: /.azurepipelines/.templates/.python/generic-function-app-package-and-deploy.yml@azdo-azure-function-package-and-deploy-pipeline-template
