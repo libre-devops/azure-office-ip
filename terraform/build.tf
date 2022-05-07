@@ -119,7 +119,7 @@ resource "azurerm_storage_container" "web_blob_container" {
 }
 
 #tfsec:ignore:azure-storage-no-public-access
-resource "azurerm_storage_container" "web_blob_container" {
+resource "azurerm_storage_container" "urls_blob_container" {
   name                  = "urls"
   storage_account_name  = module.sa.sa_name
   container_access_type = "blob"
