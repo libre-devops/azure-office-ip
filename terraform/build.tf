@@ -110,3 +110,13 @@ module "fnc_app" {
     }
   }
 }
+
+resource "azurerm_storage_container" "web_blob" {
+  name                 = "$web"
+  storage_account_name = module.sa.sa_name
+}
+
+resource "azurerm_storage_container" "web_blob" {
+  name                 = "$urls"
+  storage_account_name = module.sa.sa_name
+}
