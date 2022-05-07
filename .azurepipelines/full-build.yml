@@ -8,12 +8,12 @@ parameters:
   - name: RUN_TERRAFORM
     default: true
     type: boolean
-    displayName: "Do you wish to run terraform destroy?"
+    displayName: "Do you wish to run the terraform build?"
   
   - name: RUN_BUILD
-    default: false
+    default: true
     type: boolean
-    displayName: "Do you wish to run terraform destroy?"
+    displayName: "Do you wish to run the function deployment?"
 
 # You may wish to use a separate or self-hosted agent per job, by default, all jobs will inherit stage agent
 pool:
