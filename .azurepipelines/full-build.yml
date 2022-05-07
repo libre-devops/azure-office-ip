@@ -37,7 +37,7 @@ resources:
 # Sets stage so that multiple stages can be used if needed, as it stands, only 1 stage is expected and is thus passed as a parameter
 stages:
   - stage: "dev"
-    displayName: "Dev Stage"
+    displayName: "Terraform Dev Stage"
     jobs:
       - job: Terraform_Build
         workspace:
@@ -72,8 +72,8 @@ stages:
               AZURE_TARGET_SUBSCRIPTION_ID: $(SpokeSubID)
               CHECKOV_SKIP_TESTS: "CKV2_AZURE_1,CKV2_AZURE_8,CKV2_AZURE_18,CKV2_AZURE_21,CKV_AZURE_33,CKV_AZURE_35"
 
-  - stage: "${{ parameters.SHORTHAND_ENVIRONMENT_NAME }}-Deploy"
-    displayName: "${{ parameters.SHORTHAND_ENVIRONMENT_NAME }} Deploy Stage"
+  - stage: "Code-Deploy"
+    displayName: "CodeDeploy Stage"
     jobs:
       - deployment: Code_Build
         workspace:
