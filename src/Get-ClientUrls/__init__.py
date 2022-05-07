@@ -50,8 +50,8 @@ class EndpointsClient:
         self.ip_list = office_response.json()
         print(self.ip_list)
         for item in self.ip_list:
-            if item.get("ips") != None:
-                ip_list = item["ips"]
+            if item.get("urls") != None:
+                ip_list = item["urls"]
             else:
                 ip_list = False
             if item["serviceAreaDisplayName"] not in self.sorted_ip_list and ip_list:
@@ -194,7 +194,7 @@ class EndpointsClient:
 def main(mytimer: func.TimerRequest) -> None:
     client = EndpointsClient(
         storage_connection_string=os.environ["AzureWebJobsStorage"],
-        storage_container_name="ips",
+        storage_container_name="urls",
         working_path="/tmp",
     )
     client.get_o365_endpoints()
