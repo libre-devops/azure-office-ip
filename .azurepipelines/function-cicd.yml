@@ -37,7 +37,7 @@ parameters:
   - name: CODE_PATH
     type: string
     default: "$(Build.SourcesDirectory)/azure-office-ip/og-code"
-    displayName: "What version of terraform should be installed?"
+    displayName: "Where is your code being stored?"
 
   - name: ARCHIVE_PATH
     type: string
@@ -122,14 +122,16 @@ stages:
   - stage: "${{ parameters.SHORTHAND_ENVIRONMENT_NAME }}"
     displayName: "${{ parameters.SHORTHAND_ENVIRONMENT_NAME }} Stage"
     jobs:
-      - job: Terraform_Build
+      - job: Code_Build
         workspace:
           clean: all
-        displayName: Terraform Build
+        displayName: Code Build and Deploy
         steps:
 
           # Declare the repos needed from the resources list
           - checkout: self
+
+          - pwsh: cd $(Build.SourcesDirectory) ; ls
 
           # Remotely fetch pipeline template, in this case, I am using one in my development repo.
           - template: /.azurepipelines/.templates/.python/function-app-package-and-deploy.yml@azdo-azure-function-package-and-deploy-pipeline-template
