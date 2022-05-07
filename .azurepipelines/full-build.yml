@@ -70,10 +70,10 @@ stages:
               AZURE_TARGET_CLIENT_SECRET: $(SpokeSvpClientSecret)
               AZURE_TARGET_TENANT_ID: $(SpokeTenantId)
               AZURE_TARGET_SUBSCRIPTION_ID: $(SpokeSubID)
-              CHECKOV_SKIP_TESTS: "CKV2_AZURE_1,CKV2_AZURE_8,CKV2_AZURE_18,CKV2_AZURE_21,CKV_AZURE_33,CKV_AZURE_35"
+              CHECKOV_SKIP_TESTS: "CKV2_AZURE_1,CKV2_AZURE_8,CKV2_AZURE_18,CKV2_AZURE_21,CKV_AZURE_33,CKV_AZURE_34,CKV_AZURE_35"
 
   - stage: "Code_Deploy"
-    displayName: "CodeDeploy Stage"
+    displayName: "Code Deploy Stage"
     jobs:
       - job: Wait_For_Validation
         displayName: "Wait for external validation"
