@@ -36,7 +36,7 @@ parameters:
 
   - name: CODE_PATH
     type: string
-    default: "$(Build.SourcesDirectory)/azure-office-ip/og-code""
+    default: "$(Build.SourcesDirectory)/azure-office-ip/og-code"
     displayName: "What version of terraform should be installed?"
 
   - name: FILE_TO_ARCHIVE
@@ -61,7 +61,7 @@ parameters:
 
   - name: ARCHIVE_FILE_NAME
     type: string
-    default: "$(Build.BuildId).${{ parameters.ARCHIVE_TYPE }}"
+    default: "$(Build.BuildId)"
     displayName: "Desired archive file name"
 
   - name: ARTIFACT_NAME
@@ -96,11 +96,6 @@ parameters:
     values:
       - "functionApp"
       - "functionAppLinux"
-
-  - name: FUNCTION_APP_PACKAGE_PATH
-    type: string
-    default: "${{ parameters.ARCHIVE_PATH }}/${{ parameters.ARCHIVE_FILE_NAME }}"
-    displayName: "The path to the app package"
 
   - name: FUNCTION_APP_RUNTIME_STACK
     type: string
@@ -150,12 +145,12 @@ stages:
               FILE_TO_ARCHIVE: ${{ parameters.CODE_PATH }}
               ARCHIVE_TYPE: ${{ parameters.ARCHIVE_TYPE }}
               ARCHIVE_PATH: ${{ parameters.ARCHIVE_PATH }}
-              ARCHIVE_FILE_NAME: ${{ parameters.ARCHIVE_FILE_NAME }}
+              ARCHIVE_FILE_NAME: ${{ parameters.ARCHIVE_FILE_NAME }}.${{ parameters.ARCHIVE_TYPE }}
               ARTIFACT_NAME: ${{ parameters.ARTIFACT_NAME }}
               STORE_ARTIFACT_AS_TAR: ${{ parameters.STORE_ARTIFACT_AS_TAR }}
               AZDO_SERVICE_CONNECTION_NAME: ${{ parameters.AZDO_SERVICE_CONNECTION_NAME }}
               FUNCTION_APP_TYPE: ${{ parameters.FUNCTION_APP_TYPE }}
               FUNCTION_APP_NAME: ${{ parameters.FUNCTION_APP_NAME }}
-              FUNCTION_APP_PACKAGE_PATH: ${{ parameters.FUNCTION_APP_PACKAGE_PATH }}
+              FUNCTION_APP_PACKAGE_PATH: "${{ parameters.ARCHIVE_PATH }}/${{ parameters.ARCHIVE_FILE_NAME }}"
               FUNCTION_APP_RUNTIME_STACK: ${{ parameters.FUNCTION_APP_RUNTIME_STACK }}
               FUNCTION_APP_STARTUP_COMMAND: ${{ parameters.FUNCTION_APP_STARTUP_COMMAND }}
