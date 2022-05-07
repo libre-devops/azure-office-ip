@@ -42,7 +42,7 @@ parameters:
   - name: FUNCTION_CORE_TOOLS_VERSION
     type: string
     default: "4"
-    displayName: "The name of the function app you wish to deploy too"
+    displayName: "The version of the function-core tools you want to install on the host"
 
 # Sets what repos need cloned, for example, a library repo for modules and a poly-repo for target code
 resources:
