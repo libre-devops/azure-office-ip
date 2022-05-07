@@ -69,11 +69,6 @@ parameters:
     default: false
     displayName: "Do you wish to tar the artifact before upload, defaults to false"
 
-  - name: VARIABLE_GROUP_NAME
-    type: string
-    default: "svp-kv-ldo-euw-dev-mgt-01"
-    displayName: "Enter the variable group which contains your authentication information"
-
   - name: AZDO_SERVICE_CONNECTION_NAME
     type: string
     default: "svp-ldo-euw-dev-mgt-01"
