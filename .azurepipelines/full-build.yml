@@ -78,16 +78,24 @@ stages:
       - job: waitForValidation
         displayName: Wait for external validation
         pool: server
+<<<<<<< HEAD
         timeoutInMinutes: 4320 # job times out in 3 days
         steps:
           - task: ManualValidation@0
             timeoutInMinutes: 1440 # task times out in 1 day
+=======
+        timeoutInMinutes: 4320
+        steps:
+          - task: ManualValidation@0
+            timeoutInMinutes: 1440
+>>>>>>> 655a2d9 (update)
             inputs:
               notifyUsers: |
                 craig@craigthacker.dev
               instructions: 'Please validate the build configuration and resume'
               onTimeout: 'reject'
 
+<<<<<<< HEAD
       - deployment: Code_Build
         workspace:
           clean: all
@@ -98,13 +106,21 @@ stages:
             deploy:
               steps:
                 - checkout: self
+=======
+      - job: Code_Build
+        workspace:
+          clean: all
+        displayName: Code Build and Deploy
+        steps:
+          - checkout: self
+>>>>>>> 655a2d9 (update)
 
-                # Remotely fetch pipeline template, in this case, I am using one in my development repo.
-                - template: /.azurepipelines/.templates/.python/generic-function-app-package-and-deploy.yml@azdo-azure-function-package-and-deploy-pipeline-template
-                  parameters:
-                    CODE_PATH: "$(Build.SourcesDirectory/azure-office-ip/og-code"
-                    CODE_ARCH: "x64"
-                    CODE_VERSION: "3.9"
-                    AZDO_SERVICE_CONNECTION_NAME: "svp-ldo-euw-dev-mgt-01"
-                    FUNCTION_APP_NAME: "fnc-ldo-euw-dev-01"
-                    FUNCTION_CORE_TOOLS_VERSION: "4"
+          # Remotely fetch pipeline template, in this case, I am using one in my development repo.
+          - template: /.azurepipelines/.templates/.python/generic-function-app-package-and-deploy.yml@azdo-azure-function-package-and-deploy-pipeline-template
+            parameters:
+              CODE_PATH: "$(Build.SourcesDirectory/azure-office-ip/og-code"
+              CODE_ARCH: "x64"
+              CODE_VERSION: "3.9"
+              AZDO_SERVICE_CONNECTION_NAME: "svp-ldo-euw-dev-mgt-01"
+              FUNCTION_APP_NAME: "fnc-ldo-euw-dev-01"
+              FUNCTION_CORE_TOOLS_VERSION: "4"

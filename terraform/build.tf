@@ -111,6 +111,7 @@ module "fnc_app" {
   }
 }
 
+#tfsec:ignore:azure-storage-no-public-access
 resource "azurerm_storage_container" "web_blob_container" {
   name                  = "$web"
   storage_account_name  = module.sa.sa_name
