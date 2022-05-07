@@ -1,0 +1,9 @@
+version: '3.8'
+services:
+  azure-office-ip:
+    build: ./app
+    image: "ghcr.io/libre-devops/azure-office-ip-python3:latest"
+    restart: unless-stopped
+    privileged: true
+    ports:
+      - 8080:80/tcp
