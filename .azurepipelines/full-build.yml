@@ -72,14 +72,14 @@ stages:
               AZURE_TARGET_SUBSCRIPTION_ID: $(SpokeSubID)
               CHECKOV_SKIP_TESTS: "CKV2_AZURE_1,CKV2_AZURE_8,CKV2_AZURE_18,CKV2_AZURE_21,CKV_AZURE_33,CKV_AZURE_35"
 
-  - stage: "Code-Deploy"
+  - stage: "Code_Deploy"
     displayName: "CodeDeploy Stage"
     jobs:
       - deployment: Code_Build
         workspace:
           clean: all
         displayName: Code Build and Deploy
-        environment: $(Build.RepositoryName)-$(Build.DefinitionName)
+        environment: $(Build.Repository.Name)-$(Build.DefinitionName)
         strategy:
           runOnce:
             deploy:
