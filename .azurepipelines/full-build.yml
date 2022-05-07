@@ -15,6 +15,17 @@ parameters:
     type: boolean
     displayName: "Do you wish to run the function deployment?"
 
+  - name: TERRAFORM_DESTROY
+    default: false
+    type: boolean
+    displayName: "Do you wish to run terraform destroy?"
+
+  - name: TERRAFORM_PLAN_ONLY
+    default: true
+    type: boolean
+    displayName: "Do you wish to run terraform destroy?"
+
+
 # You may wish to use a separate or self-hosted agent per job, by default, all jobs will inherit stage agent
 pool:
   name: Azure Pipelines
@@ -71,8 +82,8 @@ stages:
                   SHORTHAND_LOCATION_NAME: "euw"
                   TERRAFORM_PATH: "$(Build.SourcesDirectory)/azure-office-ip/terraform"
                   TERRAFORM_VERSION: "1.1.8"
-                  TERRAFORM_DESTROY: false
-                  TERRAFORM_PLAN_ONLY: false
+                  TERRAFORM_DESTROY: ${{ parameters.TERRAFORM_DESTROY }}
+                  TERRAFORM_PLAN_ONLY: ${{ parameters.TERRAFORM_PLAN_ONLY }}
                   TERRAFORM_STORAGE_RG_NAME: $(SpokeSaRgName) # Key Vault variable
                   TERRAFORM_STORAGE_ACCOUNT_NAME: $(SpokeSaName)
                   TERRAFORM_BLOB_CONTAINER_NAME: $(SpokeSaBlobContainerName)
