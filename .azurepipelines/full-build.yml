@@ -73,34 +73,34 @@ stages:
               CHECKOV_SKIP_TESTS: "CKV2_AZURE_1,CKV2_AZURE_8,CKV2_AZURE_18,CKV2_AZURE_21,CKV_AZURE_33,CKV_AZURE_35"
 
   - stage: "Code_Deploy"
-      displayName: "CodeDeploy Stage"
-      jobs:
-        - job: Wait_For_Validation
-          displayName: "Wait for external validation"
-          pool: server
-          timeoutInMinutes: 4320 # job times out in 3 days
-          steps:
-            - task: ManualValidation@0
-              timeoutInMinutes: 1440 # task times out in 1 day
-              inputs:
-                notifyUsers: |
-                  craig@craigthacker.dev
-                instructions: 'Please validate the build configuration and resume'
-                onTimeout: 'reject'
+    displayName: "CodeDeploy Stage"
+    jobs:
+      - job: Wait_For_Validation
+        displayName: "Wait for external validation"
+        pool: server
+        timeoutInMinutes: 4320 # job times out in 3 days
+        steps:
+          - task: ManualValidation@0
+            timeoutInMinutes: 1440 # task times out in 1 day
+            inputs:
+              notifyUsers: |
+                craig@craigthacker.dev
+              instructions: 'Please validate the build configuration and resume'
+              onTimeout: 'reject'
 
-        - job: Code_Build
-          workspace:
-            clean: all
-          displayName: "Code Build and Deploy"
-          steps:
-            - checkout: self
+      - job: Code_Build
+        workspace:
+          clean: all
+        displayName: "Code Build and Deploy"
+        steps:
+          - checkout: self
 
-            # Remotely fetch pipeline template, in this case, I am using one in my development repo.
-            - template: /.azurepipelines/.templates/.python/generic-function-app-package-and-deploy.yml@azdo-azure-function-package-and-deploy-pipeline-template
-              parameters:
-                CODE_PATH: "$(Build.SourcesDirectory/azure-office-ip/og-code"
-                CODE_ARCH: "x64"
-                CODE_VERSION: "3.9"
-                AZDO_SERVICE_CONNECTION_NAME: "svp-ldo-euw-dev-mgt-01"
-                FUNCTION_APP_NAME: "fnc-ldo-euw-dev-01"
-                FUNCTION_CORE_TOOLS_VERSION: "4"
+          # Remotely fetch pipeline template, in this case, I am using one in my development repo.
+          - template: /.azurepipelines/.templates/.python/generic-function-app-package-and-deploy.yml@azdo-azure-function-package-and-deploy-pipeline-template
+            parameters:
+              CODE_PATH: "$(Build.SourcesDirectory/azure-office-ip/og-code"
+              CODE_ARCH: "x64"
+              CODE_VERSION: "3.9"
+              AZDO_SERVICE_CONNECTION_NAME: "svp-ldo-euw-dev-mgt-01"
+              FUNCTION_APP_NAME: "fnc-ldo-euw-dev-01"
+              FUNCTION_CORE_TOOLS_VERSION: "4"
