@@ -141,6 +141,6 @@ stages:
               AZDO_SERVICE_CONNECTION_NAME: ${{ parameters.AZDO_SERVICE_CONNECTION_NAME }}
               FUNCTION_APP_TYPE: ${{ parameters.FUNCTION_APP_TYPE }}
               FUNCTION_APP_NAME: ${{ parameters.FUNCTION_APP_NAME }}
-              FUNCTION_APP_PACKAGE_PATH: "$(Build.ArtifactStagingDirectory)"
+              FUNCTION_APP_PACKAGE_PATH: "$(Build.ArtifactStagingDirectory)/${{ parameters.ARCHIVE_FILE_NAME }}.${{ parameters.ARCHIVE_TYPE }}"
               FUNCTION_APP_RUNTIME_STACK: ${{ parameters.FUNCTION_APP_RUNTIME_STACK }}
               FUNCTION_APP_STARTUP_COMMAND: ${{ parameters.FUNCTION_APP_STARTUP_COMMAND }}
