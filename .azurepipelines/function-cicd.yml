@@ -6,9 +6,27 @@ trigger: none
 # parameters are typed with defaults so they are correctly populated, you will get a choice in the GUI to edit these, but you should keep all changes as code.
 parameters:
 
+  - name: SHORTHAND_ENVIRONMENT_NAME
+    default: dev
+    displayName: "What is the shorthand name for this environment?"
+    type: string
+    values:
+      - dev
+      - poc
+      - mvp
+      - tst
+      - uat
+      - ppd
+      - prd
+
+  - name: SHORTHAND_PROJECT_NAME
+    type: string
+    default: "ldo"
+    displayName: "Shorthand Project e.g. lbdo for libredevops"
+
   - name: CODE_VERSION
     type: string
-    default: ""
+    default: "3.9"
     displayName: "What is version of your language stack, e.g. for python - 3.9?"
 
   - name: CODE_ARCH
@@ -18,7 +36,7 @@ parameters:
 
   - name: CODE_PATH
     type: string
-    default: ""
+    default: "$(Build.SourcesDirectory)/azure-office-ip/og-code""
     displayName: "What version of terraform should be installed?"
 
   - name: FILE_TO_ARCHIVE
@@ -28,13 +46,28 @@ parameters:
 
   - name: ARCHIVE_PATH
     type: string
-    default: ""
+    default: "$(Build.ArtifactStagingDirectory)"
     displayName: "Desired archive file path"
+
+  - name: ARCHIVE_TYPE
+    type: string
+    default: "zip"
+    displayName: "Archive Type"
+    values:
+      - zip
+      - tar
+      - 7z
+      - wim
 
   - name: ARCHIVE_FILE_NAME
     type: string
-    default: ""
+    default: "$(Build.BuildId).${{ parameters.ARCHIVE_TYPE }}"
     displayName: "Desired archive file name"
+
+  - name: ARTIFACT_NAME
+    type: string
+    default: "lbdo-fnc-drop"
+    displayName: "The name of the artifact"
 
   - name: STORE_ARTIFACT_AS_TAR
     type: boolean
@@ -48,37 +81,36 @@ parameters:
 
   - name: AZDO_SERVICE_CONNECTION_NAME
     type: string
-    default: ""
+    default: "svp-ldo-euw-dev-mgt-01"
     displayName: "The name of the azdo service connection which has IAM to your function app"
 
   - name: FUNCTION_APP_NAME
     type: string
-    default: ""
+    default: "fnc-ldo-euw-dev-01"
     displayName: "The name of the function app you wish to deploy too"
 
   - name: FUNCTION_APP_TYPE
     type: string
-    default: ""
+    default: "functionAppLinux"
     displayName: "The type of function app"
+    values:
+      - "functionApp"
+      - "functionAppLinux"
 
   - name: FUNCTION_APP_PACKAGE_PATH
     type: string
-    default: ""
+    default: "${{ parameters.ARCHIVE_PATH }}/${{ parameters.ARCHIVE_FILE_NAME }}"
     displayName: "The path to the app package"
 
   - name: FUNCTION_APP_RUNTIME_STACK
     type: string
-    default: ""
+    default: "PYTHON|3.8"
     displayName: "The type of Azure function app you are deploying too"
 
   - name: FUNCTION_APP_STARTUP_COMMAND
     type: string
-    default: ""
+    default: "__init__.py"
     displayName: "The function startup cmd"
-
-# Declare variable group to pass variables to parameters, in this case, a libre-devops keyvault which is using a service principle for authentication
-variables:
-  - group: ${{ parameters.VARIABLE_GROUP_NAME }}
 
 # Sets what repos need cloned, for example, a library repo for modules and a poly-repo for target code
 resources:
@@ -112,18 +144,18 @@ stages:
           # Remotely fetch pipeline template, in this case, I am using one in my development repo.
           - template: /.azurepipelines/.templates/.python/function-app-package-and-deploy.yml@azdo-azure-function-package-and-deploy-pipeline-template
             parameters:
-              CODE_VERSION: "3.9"
-              CODE_ARCH: "x64"
-              CODE_PATH: "$(Build.SourcesDirectory)/azure-office-ip/og-code"
+              CODE_VERSION: ${{ parameters.CODE_VERSION }}
+              CODE_ARCH: ${{ parameters.CODE_ARCH }}
+              CODE_PATH: ${{ parameters.CODE_PATH }}
               FILE_TO_ARCHIVE: ${{ parameters.CODE_PATH }}
-              ARCHIVE_TYPE: "zip"
-              ARCHIVE_PATH: $(Build.ArtifactStagingDirectory)
-              ARCHIVE_FILE_NAME: $(Build.BuildId).${{ parameters.ARCHIVE_TYPE }}
-              ARTIFACT_NAME: "lbdo-fnc-drop"
-              STORE_ARTIFACT_AS_TAR: false
-              AZDO_SERVICE_CONNECTION_NAME: "svp-ldo-euw-dev-mgt-01"
-              FUNCTION_APP_TYPE: "functionAppLinux"
-              FUNCTION_APP_NAME: "fnc-ldo-euw-dev-01"
-              FUNCTION_APP_PACKAGE_PATH: "${{ parameters.ARCHIVE_PATH }}/${{ parameters.ARCHIVE_FILE_NAME }}"
-              FUNCTION_APP_RUNTIME_STACK: "PYTHON|3.8"
-              FUNCTION_APP_STARTUP_COMMAND: "__init__.py"
+              ARCHIVE_TYPE: ${{ parameters.ARCHIVE_TYPE }}
+              ARCHIVE_PATH: ${{ parameters.ARCHIVE_PATH }}
+              ARCHIVE_FILE_NAME: ${{ parameters.ARCHIVE_FILE_NAME }}
+              ARTIFACT_NAME: ${{ parameters.ARTIFACT_NAME }}
+              STORE_ARTIFACT_AS_TAR: ${{ parameters.STORE_ARTIFACT_AS_TAR }}
+              AZDO_SERVICE_CONNECTION_NAME: ${{ parameters.AZDO_SERVICE_CONNECTION_NAME }}
+              FUNCTION_APP_TYPE: ${{ parameters.FUNCTION_APP_TYPE }}
+              FUNCTION_APP_NAME: ${{ parameters.FUNCTION_APP_NAME }}
+              FUNCTION_APP_PACKAGE_PATH: ${{ parameters.FUNCTION_APP_PACKAGE_PATH }}
+              FUNCTION_APP_RUNTIME_STACK: ${{ parameters.FUNCTION_APP_RUNTIME_STACK }}
+              FUNCTION_APP_STARTUP_COMMAND: ${{ parameters.FUNCTION_APP_STARTUP_COMMAND }}
