@@ -74,12 +74,6 @@ resources:
     name: libre-devops/azure-naming-convention
     ref: main
 
-  - repository: azure-pipelines-module-development-build
-    type: github
-    endpoint: github_service_connection
-    name: libre-devops/azure-pipelines-module-development-build
-    ref: dev
-
   - repository: terraform-azdo-pipeline-template
     type: github
     endpoint: github_service_connection
