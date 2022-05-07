@@ -2,7 +2,7 @@
   "scriptFile": "__init__.py",
   "bindings": [
     {
-      "name": "get_client_ips",
+      "name": "mytimer",
       "type": "timerTrigger",
       "direction": "in",
       "schedule": "0 0 */3 * * *"

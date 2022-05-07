@@ -7,7 +7,7 @@ import uuid
 import azure.functions as func
 
 
-class EndpointsClientIps:
+class EndpointsClient:
     def __init__(self, storage_connection_string, storage_container_name, working_path):
         service_client = BlobServiceClient.from_connection_string(
             storage_connection_string
@@ -191,11 +191,11 @@ class EndpointsClientIps:
                 files.append(relative_path)
         return files
 
-# Defines the parts of the code which will store in the Azure storage container
-def ips_main(get_client_ips: func.TimerRequest) -> None:
-    client = EndpointsClientIps(
+
+def main(mytimer: func.TimerRequest) -> None:
+    client = EndpointsClient(
         storage_connection_string=os.environ["AzureWebJobsStorage"],
-        storage_container_name="ips",
+        storage_container_name="$web",
         working_path="/tmp",
     )
     client.get_o365_endpoints()
