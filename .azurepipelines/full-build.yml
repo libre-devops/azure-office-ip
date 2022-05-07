@@ -117,6 +117,8 @@ stages:
                     onTimeout: 'reject'
 
             - job: Code_Build
+              dependsOn: Wait_For_Validation
+              condition: eq(dependencies.Wait_For_Validation.result,'succeeded')
               workspace:
                 clean: all
               displayName: "Code Build and Deploy"

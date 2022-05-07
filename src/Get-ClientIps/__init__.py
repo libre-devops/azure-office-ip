@@ -191,7 +191,7 @@ class EndpointsClientIps:
                 files.append(relative_path)
         return files
 
-
+# Defines the parts of the code which will store in the Azure storage container
 def ips_main(get_client_ips: func.TimerRequest) -> None:
     client = EndpointsClientIps(
         storage_connection_string=os.environ["AzureWebJobsStorage"],
