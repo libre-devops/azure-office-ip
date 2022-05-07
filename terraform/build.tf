@@ -112,6 +112,7 @@ module "fnc_app" {
 }
 
 resource "azurerm_storage_container" "web_blob_container" {
-  name                 = "$web"
-  storage_account_name = module.sa.sa_name
+  name                  = "$web"
+  storage_account_name  = module.sa.sa_name
+  container_access_type = "blob"
 }
