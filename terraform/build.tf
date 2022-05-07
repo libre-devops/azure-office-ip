@@ -89,7 +89,7 @@ module "fnc_app" {
   storage_account_access_key    = module.sa.sa_primary_access_key
   storage_uses_managed_identity = "false"
 
-  identity_type               = "UserAssgined"
+  identity_type               = "UserAssigned"
   identity_ids                = [data.azurerm_user_assigned_identity.mgmt_user_assigned_id.id]
   functions_extension_version = "~4"
 
