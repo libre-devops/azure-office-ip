@@ -23,7 +23,7 @@ parameters:
   - name: TERRAFORM_PLAN_ONLY
     default: true
     type: boolean
-    displayName: "Do you wish to run terraform destroy?"
+    displayName: "Do you wish to run terraform plan ONLY?"
 
 
 # You may wish to use a separate or self-hosted agent per job, by default, all jobs will inherit stage agent
