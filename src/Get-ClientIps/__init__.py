@@ -192,7 +192,7 @@ class EndpointsClientIps:
         return files
 
 
-def ips_main(mytimer: func.TimerRequest) -> None:
+def ips_main(get_client_ips: func.TimerRequest) -> None:
     client = EndpointsClientIps(
         storage_connection_string=os.environ["AzureWebJobsStorage"],
         storage_container_name="ips",
