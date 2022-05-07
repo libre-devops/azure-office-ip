@@ -36,7 +36,7 @@ parameters:
     default: ""
     displayName: "Desired archive file name"
 
-  - name: ARCHIVE_FILE_NAME
+  - name: STORE_ARTIFACT_AS_TAR
     type: boolean
     default: false
     displayName: "Do you wish to tar the artifact before upload, defaults to false"
