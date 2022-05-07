@@ -3,6 +3,18 @@ name: $(Build.DefinitionName)-$(date:yyyyMMdd)$(rev:.r)
 
 trigger: none
 
+parameters:
+
+  - name: RUN_TERRAFORM
+    default: true
+    type: boolean
+    displayName: "Do you wish to run terraform destroy?"
+  
+  - name: RUN_BUILD
+    default: false
+    type: boolean
+    displayName: "Do you wish to run terraform destroy?"
+
 # You may wish to use a separate or self-hosted agent per job, by default, all jobs will inherit stage agent
 pool:
   name: Azure Pipelines
@@ -36,71 +48,75 @@ resources:
 
 # Sets stage so that multiple stages can be used if needed, as it stands, only 1 stage is expected and is thus passed as a parameter
 stages:
-  - stage: "dev"
-    displayName: "Terraform Dev Stage"
-    jobs:
-      - job: Terraform_Build
-        workspace:
-          clean: all
-        displayName: Terraform Build
-        steps:
+    - ${{ if eq(parameters.RUN_TERRAFORM, true) }}:
 
-          # Declare the repos needed from the resources list
-          - checkout: self
-          - checkout: azure-naming-convention
+      - stage: "dev"
+        displayName: "Terraform Dev Stage"
+        jobs:
+          - job: Terraform_Build
+            workspace:
+              clean: all
+            displayName: Terraform Build
+            steps:
 
-          # Remotely fetch pipeline template, in this case, I am using one in my development repo.
-          - template: /.azurepipelines/.templates/terraform-cicd-template.yml@terraform-azdo-pipeline-template
-            parameters:
-              SHORTHAND_PROJECT_NAME: "ldo"
-              SHORTHAND_ENVIRONMENT_NAME: "dev"
-              SHORTHAND_LOCATION_NAME: "euw"
-              TERRAFORM_PATH: "$(Build.SourcesDirectory)/azure-office-ip/terraform"
-              TERRAFORM_VERSION: "1.1.8"
-              TERRAFORM_DESTROY: false
-              TERRAFORM_PLAN_ONLY: false
-              TERRAFORM_STORAGE_RG_NAME: $(SpokeSaRgName) # Key Vault variable
-              TERRAFORM_STORAGE_ACCOUNT_NAME: $(SpokeSaName)
-              TERRAFORM_BLOB_CONTAINER_NAME: $(SpokeSaBlobContainerName)
-              TERRAFORM_STORAGE_KEY: $(SpokeSaPrimaryKey)
-              TERRAFORM_STATE_NAME: "ldo-dev.terraform.tfstate"
-              TERRAFORM_WORKSPACE_NAME: $(System.StageName)
-              TERRAFORM_COMPLIANCE_PATH: "$(Build.SourcesDirectory)/azure-naming-convention/az-terraform-compliance-policy"
-              AZURE_TARGET_CLIENT_ID: $(SpokeSvpClientId)
-              AZURE_TARGET_CLIENT_SECRET: $(SpokeSvpClientSecret)
-              AZURE_TARGET_TENANT_ID: $(SpokeTenantId)
-              AZURE_TARGET_SUBSCRIPTION_ID: $(SpokeSubID)
-              CHECKOV_SKIP_TESTS: "CKV2_AZURE_1,CKV2_AZURE_8,CKV2_AZURE_18,CKV2_AZURE_21,CKV_AZURE_33,CKV_AZURE_34,CKV_AZURE_35"
+              # Declare the repos needed from the resources list
+              - checkout: self
+              - checkout: azure-naming-convention
 
-  - stage: "Code_Deploy"
-    displayName: "Code Deploy Stage"
-    jobs:
-      - job: Wait_For_Validation
-        displayName: "Wait for external validation"
-        pool: server
-        timeoutInMinutes: 4320 # job times out in 3 days
-        steps:
-          - task: ManualValidation@0
-            timeoutInMinutes: 1440 # task times out in 1 day
-            inputs:
-              notifyUsers: |
-                craig@craigthacker.dev
-              instructions: 'Please validate the build configuration and resume'
-              onTimeout: 'reject'
+              # Remotely fetch pipeline template, in this case, I am using one in my development repo.
+              - template: /.azurepipelines/.templates/terraform-cicd-template.yml@terraform-azdo-pipeline-template
+                parameters:
+                  SHORTHAND_PROJECT_NAME: "ldo"
+                  SHORTHAND_ENVIRONMENT_NAME: "dev"
+                  SHORTHAND_LOCATION_NAME: "euw"
+                  TERRAFORM_PATH: "$(Build.SourcesDirectory)/azure-office-ip/terraform"
+                  TERRAFORM_VERSION: "1.1.8"
+                  TERRAFORM_DESTROY: false
+                  TERRAFORM_PLAN_ONLY: false
+                  TERRAFORM_STORAGE_RG_NAME: $(SpokeSaRgName) # Key Vault variable
+                  TERRAFORM_STORAGE_ACCOUNT_NAME: $(SpokeSaName)
+                  TERRAFORM_BLOB_CONTAINER_NAME: $(SpokeSaBlobContainerName)
+                  TERRAFORM_STORAGE_KEY: $(SpokeSaPrimaryKey)
+                  TERRAFORM_STATE_NAME: "ldo-dev.terraform.tfstate"
+                  TERRAFORM_WORKSPACE_NAME: $(System.StageName)
+                  TERRAFORM_COMPLIANCE_PATH: "$(Build.SourcesDirectory)/azure-naming-convention/az-terraform-compliance-policy"
+                  AZURE_TARGET_CLIENT_ID: $(SpokeSvpClientId)
+                  AZURE_TARGET_CLIENT_SECRET: $(SpokeSvpClientSecret)
+                  AZURE_TARGET_TENANT_ID: $(SpokeTenantId)
+                  AZURE_TARGET_SUBSCRIPTION_ID: $(SpokeSubID)
+                  CHECKOV_SKIP_TESTS: "CKV2_AZURE_1,CKV2_AZURE_8,CKV2_AZURE_18,CKV2_AZURE_21,CKV_AZURE_33,CKV_AZURE_34,CKV_AZURE_35"
 
-      - job: Code_Build
-        workspace:
-          clean: all
-        displayName: "Code Build and Deploy"
-        steps:
-          - checkout: self
+    - ${{ if eq(parameters.RUN_BUILD, true) }}:
 
-          # Remotely fetch pipeline template, in this case, I am using one in my development repo.
-          - template: /.azurepipelines/.templates/.python/generic-function-app-package-and-deploy.yml@azdo-azure-function-package-and-deploy-pipeline-template
-            parameters:
-              CODE_PATH: "$(Build.SourcesDirectory/azure-office-ip/og-code"
-              CODE_ARCH: "x64"
-              CODE_VERSION: "3.9"
-              AZDO_SERVICE_CONNECTION_NAME: "svp-ldo-euw-dev-mgt-01"
-              FUNCTION_APP_NAME: "fnc-ldo-euw-dev-01"
-              FUNCTION_CORE_TOOLS_VERSION: "4"
+        - stage: "Code_Deploy"
+          displayName: "Code Deploy Stage"
+          jobs:
+            - job: Wait_For_Validation
+              displayName: "Wait for external validation"
+              pool: server
+              timeoutInMinutes: 4320 # job times out in 3 days
+              steps:
+                - task: ManualValidation@0
+                  timeoutInMinutes: 1440 # task times out in 1 day
+                  inputs:
+                    notifyUsers: |
+                      craig@craigthacker.dev
+                    instructions: 'Please validate the build configuration and resume'
+                    onTimeout: 'reject'
+
+            - job: Code_Build
+              workspace:
+                clean: all
+              displayName: "Code Build and Deploy"
+              steps:
+                - checkout: self
+
+                # Remotely fetch pipeline template, in this case, I am using one in my development repo.
+                - template: /.azurepipelines/.templates/.python/generic-function-app-package-and-deploy.yml@azdo-azure-function-package-and-deploy-pipeline-template
+                  parameters:
+                    CODE_PATH: "$(Build.SourcesDirectory)/azure-office-ip/og-code"
+                    CODE_ARCH: "x64"
+                    CODE_VERSION: "3.9"
+                    AZDO_SERVICE_CONNECTION_NAME: "svp-ldo-euw-dev-mgt-01"
+                    FUNCTION_APP_NAME: "fnc-ldo-euw-dev-01"
+                    FUNCTION_CORE_TOOLS_VERSION: "4"
