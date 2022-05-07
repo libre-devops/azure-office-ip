@@ -75,11 +75,24 @@ stages:
   - stage: "Code_Deploy"
     displayName: "CodeDeploy Stage"
     jobs:
+      - job: waitForValidation
+        displayName: Wait for external validation
+        pool: server
+        timeoutInMinutes: 4320 # job times out in 3 days
+        steps:
+          - task: ManualValidation@0
+            timeoutInMinutes: 1440 # task times out in 1 day
+            inputs:
+              notifyUsers: |
+                craig@craigthacker.dev
+              instructions: 'Please validate the build configuration and resume'
+              onTimeout: 'reject'
+
       - deployment: Code_Build
         workspace:
           clean: all
         displayName: Code Build and Deploy
-        environment: $(Build.Repository.Name)-$(Build.DefinitionName)
+        environment: github-builds
         strategy:
           runOnce:
             deploy:
