@@ -39,11 +39,6 @@ parameters:
     default: "$(Build.SourcesDirectory)/azure-office-ip/og-code"
     displayName: "What version of terraform should be installed?"
 
-  - name: FILE_TO_ARCHIVE
-    type: string
-    default: ""
-    displayName: "Desired file to be archived"
-
   - name: ARCHIVE_PATH
     type: string
     default: "$(Build.ArtifactStagingDirectory)"
