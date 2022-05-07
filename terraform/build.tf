@@ -103,7 +103,10 @@ module "fnc_app" {
     }
 
     auth_settings = {
-      enabled = false
+      enabled                        = false
+      runtime_version                = "~1"
+      unauthenticated_client_action  = "AllowAnonymous"
+
     }
   }
 }
