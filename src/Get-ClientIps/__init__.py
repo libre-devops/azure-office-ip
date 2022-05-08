@@ -1,13 +1,15 @@
 from azure.storage.blob import BlobServiceClient, ContentSettings
 import requests
-import json
 import os
 from datetime import datetime
 import uuid
 import azure.functions as func
 
+
 class EndpointsClient:
     def __init__(self, storage_connection_string, storage_container_name, working_path):
+        self.ip_list = None
+        self.sorted_ip_list = None
         service_client = BlobServiceClient.from_connection_string(
             storage_connection_string
         )
@@ -50,7 +52,7 @@ class EndpointsClient:
         self.ip_list = office_response.json()
         print(self.ip_list)
         for item in self.ip_list:
-            if item.get("ips") != None:
+            if item.get("ips") is not None:
                 ip_list = item["ips"]
             else:
                 ip_list = False

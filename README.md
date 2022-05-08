@@ -11,7 +11,6 @@ The fork aims to add some functionality to the app, as well as integrate it with
 This repo hosts all the code and the mechanisms to deploy a Linux Azure Function App into the Libre DevOps tenant.
 
 - Build function app and needed resources using terraform
-- Build locally using docker or podman
 - Debug locally with a simplified script
 - Deploy code via Azure Pipelines
 

@@ -9,6 +9,9 @@ import azure.functions as func
 
 class EndpointsClient:
     def __init__(self, storage_connection_string, storage_container_name, working_path):
+        self.urls_output = None
+        self.url_list = None
+        self.sorted_url_list = None
         service_client = BlobServiceClient.from_connection_string(
             storage_connection_string
         )
@@ -54,9 +57,7 @@ class EndpointsClient:
         """
         Store obtained data locally
         """
-        with open(
-            f"{self.artifacts_path}/{prepend_value}.txt", "w"
-        ) as out_file:
+        with open(f"{self.artifacts_path}/{prepend_value}.txt", "w") as out_file:
             for key in self.get_o365_endpoints():
                 out_file.write("%s\n" % key)
 
@@ -67,21 +68,21 @@ class EndpointsClient:
         artifacts_files = os.listdir(self.artifacts_path)
         artifacts_files.sort(reverse=True)
         main_page_content = (
-            "<html>\n<head>\n</head>\n<body>\n Generated date:<br>"
-            + str(datetime.now())
-            + "<br><br>Generated list:<br>"
+                "<html>\n<head>\n</head>\n<body>\n Generated date:<br>"
+                + str(datetime.now())
+                + "<br><br>Generated list:<br>"
         )
         for item in artifacts_files:
             print(item)
             main_page_content = (
-                main_page_content
-                + '<a href="'
-                + self.out_path
-                + "/"
-                + item
-                + '" download>'
-                + item
-                + "</href>\n <br>"
+                    main_page_content
+                    + '<a href="'
+                    + self.out_path
+                    + "/"
+                    + item
+                    + '" download>'
+                    + item
+                    + "</href>\n <br>"
             )
         main_page_content += "</body></html>"
         with open(self.main_page_path, "w") as out_file:
@@ -179,6 +180,7 @@ class EndpointsClient:
             if recursive or not "/" in relative_path:
                 files.append(relative_path)
         return files
+
 
 # Defines Azure Function
 def main(getclienturls: func.TimerRequest) -> None:
