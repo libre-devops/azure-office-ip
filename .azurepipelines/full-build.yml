@@ -80,7 +80,7 @@ stages:
                   SHORTHAND_PROJECT_NAME: "ldo"
                   SHORTHAND_ENVIRONMENT_NAME: "dev"
                   SHORTHAND_LOCATION_NAME: "euw"
-                  TERRAFORM_PATH: "$(Build.SourcesDirectory)/azure-office-ip/terraform"
+                  TERRAFORM_PATH: "$(Build.SourcesDirectory)/get-azure-microsoft-ips-function-app/terraform"
                   TERRAFORM_VERSION: "1.1.8"
                   TERRAFORM_DESTROY: ${{ parameters.TERRAFORM_DESTROY }}
                   TERRAFORM_PLAN_ONLY: ${{ parameters.TERRAFORM_PLAN_ONLY }}
@@ -129,7 +129,7 @@ stages:
                 # Remotely fetch pipeline template, in this case, I am using one in my development repo.
                 - template: /.azurepipelines/.templates/.python/generic-function-app-package-and-deploy.yml@azdo-azure-function-package-and-deploy-pipeline-template
                   parameters:
-                    CODE_PATH: "$(Build.SourcesDirectory)/azure-office-ip/src"
+                    CODE_PATH: "$(Build.SourcesDirectory)/get-azure-microsoft-ips-function-app/src"
                     CODE_ARCH: "x64"
                     CODE_VERSION: "3.9"
                     AZDO_SERVICE_CONNECTION_NAME: "svp-ldo-euw-dev-mgt-01"
