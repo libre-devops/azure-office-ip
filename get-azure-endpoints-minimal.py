@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
-
+import json
 import requests
 import uuid
 import pprint
-
 
 def clear():
     sorted_ip_list = {}
@@ -67,8 +66,12 @@ def get_o365_endpoints_urls():
     for key in url_list:
         if "urls" in key:
             urls.append(key["urls"])
-            pprint.pprint(urls)
-
+            urls = urls
+    urls_json_list = json.loads(json.dumps(urls))
+    flat_list = [item for sublist in urls_json_list for item in sublist]
+    with open("test.txt", 'w') as out_file:
+        for key in flat_list:
+            out_file.write("%s\n" % key)
 
 
 

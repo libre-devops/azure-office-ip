@@ -6,6 +6,7 @@ from datetime import datetime
 import uuid
 import azure.functions as func
 
+
 class EndpointsClient:
     def __init__(self, storage_connection_string, storage_container_name, working_path):
         service_client = BlobServiceClient.from_connection_string(
@@ -26,17 +27,6 @@ class EndpointsClient:
         self.sorted_url_list = {}
         self.url_list = None
 
-    def get_azure_endpoints(self):
-        """
-        Get Azure Datacenter endpoints IP addresses
-        """
-        self.clear()
-        azure_response = requests.post(
-            "https://azuredcip.azurewebsites.net/getazuredcipranges",
-            json={"request": "dcip", "region": "all"},
-        )
-        self.sorted_url_list = azure_response.json()
-
     def get_o365_endpoints(self):
         """
         Get Office 365 endpoints IP addresses
@@ -53,17 +43,20 @@ class EndpointsClient:
         for key in self.url_list:
             if "urls" in key:
                 urls.append(key["urls"])
+                self.urls_output = urls
 
     def export_locally(self, prepend_value=""):
         """
         Store obtained data locally
         """
-        for key in self.sorted_url_list.keys():
+        urls_json_list = json.loads(json.dumps(self.urls_output))
+        flat_list = [item for sublist in urls_json_list for item in sublist]
+        for key in self.url_list():
             with open(
                 f"{self.artifacts_path}/{prepend_value}{key}.txt", "w"
             ) as out_file:
-                for item in self.sorted_url_list[key]:
-                    out_file.write("%s\n" % item)
+                for key in flat_list:
+                    out_file.write("%s\n" % key)
 
     def new_main_page(self):
         """
@@ -194,7 +187,6 @@ def main(getclienturls: func.TimerRequest) -> None:
     )
     client.get_o365_endpoints()
     client.export_locally()
-    client.get_azure_endpoints()
     client.export_locally(prepend_value="Azure Cloud: region ")
     client.upload_dir()
     client.new_main_page()
