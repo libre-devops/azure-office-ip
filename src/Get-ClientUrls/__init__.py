@@ -6,7 +6,6 @@ from datetime import datetime
 import uuid
 import azure.functions as func
 
-
 class EndpointsClient:
     def __init__(self, storage_connection_string, storage_container_name, working_path):
         self.urls_output = None
@@ -180,7 +179,6 @@ class EndpointsClient:
             if recursive or not "/" in relative_path:
                 files.append(relative_path)
         return files
-
 
 # Defines Azure Function
 def main(getclienturls: func.TimerRequest) -> None:

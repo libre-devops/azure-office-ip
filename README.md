@@ -16,11 +16,22 @@ This repo hosts all the code and the mechanisms to deploy a Linux Azure Function
 
 The function itself is a Timer function, which, every 5 hours will fetch a list of IPs and add them to a convenient format inside a storage account created with terraform.
 
-There are 2 functions - `Get-ClientIps` and `Get-ClientUrls`.  These functions do what they say in the tin, one fetches a list of IPs object from the [Office365 API](https://endpoints.office.com/endpoints/worldwide) and the other does the exact same, except gets the `urls` property as well.
+There are 2 functions:
+- `Get-ClientIps` 
+- `Get-ClientUrls`.  
 
+These functions do what they say in the tin, one fetches a list of IPs object from the [Office365 API](https://endpoints.office.com/endpoints/worldwide) and the other does the exact same, except gets the `urls` property as well.
+
+These are then outputted to a blob container called `$web`
 
 ## Building the environment
 
 At the time of writing, this project only supports Azure DevOps continuous integration and is setup to deploy using some expected items in the Libre DevOps Azure DevOps instance.
 
 You can freely use the modules used to deploy these resources as well as the pipeline templates, but setting up the bits in between will be up to you.
+
+### Terraform Build
+- 1x Resource Group
+- 1x Linux Function app on Consumption Service Plan with Python 3.9 Application Stack (up to date with the v3 Azurerm provider changes in terraform)
+- 1x Storage Account, Hot access tier
+- 1x Blob container with blob (anonymous access) for the URLs
