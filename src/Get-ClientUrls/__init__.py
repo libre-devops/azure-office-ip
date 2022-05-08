@@ -23,8 +23,8 @@ class EndpointsClient:
         self.clear()
 
     def clear(self):
-        self.sorted_ip_list = {}
-        self.ip_list = None
+        self.sorted_url_list = {}
+        self.url_list = None
 
     def get_azure_endpoints(self):
         """
@@ -35,7 +35,7 @@ class EndpointsClient:
             "https://azuredcip.azurewebsites.net/getazuredcipranges",
             json={"request": "dcip", "region": "all"},
         )
-        self.sorted_ip_list = azure_response.json()
+        self.sorted_url_list = azure_response.json()
 
     def get_o365_endpoints(self):
         """
@@ -47,27 +47,22 @@ class EndpointsClient:
                 self.uuid
             )
         )
-        self.ip_list = office_response.json()
-        print(self.ip_list)
-        for item in self.ip_list:
-            if item.get("urls") != None:
-                ip_list = item["urls"]
-            else:
-                ip_list = False
-            if item["serviceAreaDisplayName"] not in self.sorted_ip_list and ip_list:
-                self.sorted_ip_list[item["serviceAreaDisplayName"]] = ip_list
-            elif ip_list:
-                self.sorted_ip_list[item["serviceAreaDisplayName"]].extend(ip_list)
+        self.url_list = office_response.json()
+        print(self.url_list)
+        urls = []
+        for key in self.url_list:
+            if "urls" in key:
+                urls.append(key["urls"])
 
     def export_locally(self, prepend_value=""):
         """
         Store obtained data locally
         """
-        for key in self.sorted_ip_list.keys():
+        for key in self.sorted_url_list.keys():
             with open(
                 f"{self.artifacts_path}/{prepend_value}{key}.txt", "w"
             ) as out_file:
-                for item in self.sorted_ip_list[key]:
+                for item in self.sorted_url_list[key]:
                     out_file.write("%s\n" % item)
 
     def new_main_page(self):

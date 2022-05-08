@@ -21,9 +21,7 @@ def get_azure_endpoints():
         json={"request": "dcip", "region": "all"},
     )
     sorted_ip_list = azure_response.json()
-    print(sorted_ip_list)
-
-
+    pprint.pprint(sorted_ip_list)
 
 # Lists all office365 object
 def get_o365_endpoints_json():
@@ -53,19 +51,25 @@ def get_o365_endpoints_ips():
 
 # Lists all office365 endpoint urls and prints in a pretty json format
 def get_o365_endpoints_urls():
-    sorted_ip_list = {}
+    sorted_url_list = {}
     request_id = uuid.uuid4()
-    '''
+    """
     Get Office 365 endpoints IP addresses
-    '''
+    """
     clear()
     office_response = requests.get(
-        "https://endpoints.office.com/endpoints/worldwide?clientrequestid={}".format(request_id))
-    urls_list = office_response.json()
-    for item in urls_list:
-        if item.get("ips") is not None:
-            urls_list = item["urls"]
-    pprint.pprint(urls_list)
+        "https://endpoints.office.com/endpoints/worldwide?clientrequestid={}".format(
+            request_id
+        )
+    )
+    url_list = office_response.json()
+    urls = []
+    for key in url_list:
+        if "urls" in key:
+            urls.append(key["urls"])
+            pprint.pprint(urls)
 
 
-get_o365_endpoints_json()
+
+
+get_o365_endpoints_urls()
