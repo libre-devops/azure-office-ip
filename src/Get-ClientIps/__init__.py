@@ -196,7 +196,7 @@ class EndpointsClient:
 def main(getclientips: func.TimerRequest) -> None:
     client = EndpointsClient(
         storage_connection_string=os.environ["AzureWebJobsStorage"],
-        storage_container_name="ips",
+        storage_container_name="$web",
         working_path="/tmp",
     )
     client.get_o365_endpoints()
