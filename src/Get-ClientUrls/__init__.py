@@ -190,7 +190,7 @@ def main(getclienturls: func.TimerRequest) -> None:
     # Feeds functions parameters
     client.get_o365_endpoints()
     client.export_locally()
-    client.export_locally(prepend_value="URLs: ")
+    client.export_locally(prepend_value="urls")
     client.upload_dir()
     client.new_main_page()
     client.upload_main_page()
