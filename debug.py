@@ -8,13 +8,8 @@ import azure.functions as func
 
 
 class EndpointsClient:
-    def __init__(self, storage_connection_string, storage_container_name, working_path):
-        service_client = BlobServiceClient.from_connection_string(
-            storage_connection_string
-        )
-        self.client = service_client.get_container_client(storage_container_name)
+    def __init__(self, working_path):
         self.uuid = str(uuid.uuid4())
-        self.container_name = storage_container_name
         self.main_page = "main.html"
         self.out_path = "artifacts"
         self.artifacts_path = working_path + "/" + self.out_path
@@ -27,7 +22,6 @@ class EndpointsClient:
         self.sorted_url_list = {}
         self.url_list = None
 
-    # Gets JSON object, then converts the json to a string, then flattens the list, returns the data to the function
     def get_o365_endpoints(self):
         """
         Get Office 365 endpoints IP addresses
@@ -39,7 +33,6 @@ class EndpointsClient:
             )
         )
         self.url_list = office_response.json()
-        print(self.url_list)
         urls = []
         for key in self.url_list:
             if "urls" in key:
@@ -49,7 +42,6 @@ class EndpointsClient:
         flat_list = [item for sublist in urls_json_list for item in sublist]
         return flat_list
 
-    # Takes the input from the o365 object and prints them in a file, all singular entry
     def export_locally(self, prepend_value=""):
         """
         Store obtained data locally
@@ -180,17 +172,5 @@ class EndpointsClient:
                 files.append(relative_path)
         return files
 
-# Defines Azure Function
-def main(getclienturls: func.TimerRequest) -> None:
-    client = EndpointsClient(
-        storage_connection_string=os.environ["AzureWebJobsStorage"],
-        storage_container_name="urls",
-        working_path="/tmp",
-    )
-    # Feeds functions parameters
-    client.get_o365_endpoints()
-    client.export_locally()
-    client.export_locally(prepend_value="URLs: ")
-    client.upload_dir()
-    client.new_main_page()
-    client.upload_main_page()
+
+test = EndpointsClient(working_path=".").export_locally()
